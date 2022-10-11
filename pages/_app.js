@@ -1,28 +1,26 @@
 import { Provider } from "react-redux";
-import { ApolloProvider } from "@apollo/react-hooks";
-import cookie from "js-cookie";
+// import { ApolloProvider } from "@apollo/react-hooks";
 
 import { store } from "@/redux/store";
-import { client } from "@/utils/gql/client";
 
 import "@/styles/globals.css";
-import { useEffect, useState } from "react";
 import Head from "next/head";
+import Sidebar from "@/components/organisms/sidebar";
 
 function MyApp({ Component, pageProps }) {
   return (
     <>
-      <Head>
-        <title>Khayangan</title>
-        <link rel="shortcut icon" href="/favicon.svg" type="image/x-icon" />
-      </Head>
-
-      <div className="font-montserrat">
-        <ApolloProvider client={client}>
-          <Provider store={store}>
-            <Component {...pageProps} />
-          </Provider>
-        </ApolloProvider>
+      <div className="font-poppins">
+        {/* <ApolloProvider client={client}> */}
+        <Provider store={store}>
+          <div className="flex h-screen">
+            <Sidebar />
+            <div className="w-full h-[96.5%] overflow-y-auto relative">
+              <Component {...pageProps} />
+            </div>
+          </div>
+        </Provider>
+        {/* </ApolloProvider> */}
       </div>
     </>
   );
