@@ -6,28 +6,86 @@ import * as Yup from "yup";
 // icon
 import { MdKeyboardArrowDown, MdOutlineModeEditOutline } from "react-icons/md";
 import { BsInputCursor, BsPlusCircleFill } from "react-icons/bs";
-import { BiRadioCircleMarked } from "react-icons/bi";
+import { BiRadioCircleMarked, BiHelpCircle, BiParagraph } from "react-icons/bi";
 import { AiOutlineCheckSquare } from "react-icons/ai";
 import { IoCloseSharp } from "react-icons/io5";
 import Modal from "@/components/molecules/modal";
+import { TbHeading } from "react-icons/tb";
 
 const options = [
-  { id: 1, name: "Input", type: "text", label: "input" },
-  { id: 2, name: "Radio", type: "radio", label: "radio" },
-  { id: 3, name: "Checkbox", type: "checkbox", label: "checkbox" },
+  {
+    name: "Header",
+    type: "text",
+    label: "header",
+    helpText: "",
+    placeHolder: "Header",
+    fontSize: "h4",
+  },
+  {
+    name: "Paragraph",
+    type: "text",
+    label: "paragraph",
+    helpText: "h3",
+    placeHolder: "Paragraph",
+    fontWeight: "base",
+  },
+  {
+    name: "Input",
+    type: "text",
+    label: "input",
+    require: false,
+    helpText: "",
+    placeHolder: "Place Holder",
+  },
+  {
+    name: "Radio",
+    type: "radio",
+    label: "radio",
+    helpText: "",
+    placeHolder: "Place Holder",
+  },
+  {
+    name: "Checkbox",
+    type: "checkbox",
+    label: "checkbox",
+    helpText: "",
+    placeHolder: "Place Holder",
+  },
 ];
 
 const FormPage = () => {
   const [selected, setSelected] = useState("");
   const [selectedInputs, setSelectedInputs] = useState([]);
-  const [index, setGetIndex] = useState("");
+  const [selectedRadio, setSelectedRadio] = useState([
+    { name: "Option-1", value: "option1", selected: true },
+    { name: "Option-2", value: "option2", selected: false },
+    { name: "Option-3", value: "option3", selected: false },
+  ]);
+
+  console.log(selectedRadio);
+  const [index, setGetId] = useState(null);
   let [isOpenModal, setIsOpenModal] = useState(false);
-  console.log(options);
+
+  let rand_number = Math.floor(Math.random() * 100000);
+  let rand_time = new Date().getTime();
 
   const handleChange = (e) => {
     setSelected(e);
-    setSelectedInputs([...selectedInputs, e]);
+    setSelectedInputs([
+      ...selectedInputs,
+      { ...e, id: rand_number, fieldName: e.name + "-" + rand_time },
+    ]);
   };
+
+  const handleSubmit = (e) => {
+    e.preventDefault();
+    console.log(e);
+  };
+
+  const ValidationIfRequire = Yup.object().shape({
+    email: Yup.string().email("Invalid email").required("Email is required !"),
+    password: Yup.string().required("Password is required !"),
+  });
 
   return (
     <div className="z-40 w-full mt-4 px-8">
@@ -37,6 +95,8 @@ const FormPage = () => {
         title={selectedInputs}
         setTitle={setSelectedInputs}
         index={index}
+        selectedRadio={selectedRadio}
+        setSelectedRadio={setSelectedRadio}
       />
       <p className="font-semibold text-center tracking-tighter md:text-xl md:text-left">
         Complete your form
@@ -44,7 +104,7 @@ const FormPage = () => {
       <div className="flex flex-col md:flex-row  gap-2 mt-8">
         <div className="md:w-[75%] md:flex-row gap-4 md:items-center md:justify-between md:px-4  shadow border text-gray-700 font-medium tracking-tight p-2 text-sm rounded relative">
           <div className="flex flex-col md:flex-row gap-4 md:items-center md:justify-between md:px-4  shadow border text-gray-700 font-medium tracking-tight p-2 text-sm rounded relative">
-            <p className="text-center underline text-sky-600 md:text-base ">
+            <p className="text-center underline text-sky-600 md:text-base md:text-black ">
               Select Form
             </p>
             <div className="w-full md:w-40">
@@ -53,7 +113,17 @@ const FormPage = () => {
                 <div className="relative mt-1 border rounded-md shadow">
                   <Listbox.Button className="relative w-full cursor-pointer rounded-md bg-white py-2 pl-3 pr-10 text-left shadow-md focus:outline-none focus-visible:ring-2 focus-visible:ring-opacity-75 focus-visible:ring-offset-2  sm:text-sm">
                     <span className="pointer-events-none absolute inset-y-0 left-2 flex items-center pr-2">
-                      {selected.name == "Input" ? (
+                      {selected.name == "Header" ? (
+                        <TbHeading
+                          className="h-4 w-4 text-gray-500"
+                          aria-hidden="true"
+                        />
+                      ) : selected.name == "Paragraph" ? (
+                        <BiParagraph
+                          className="h-4 w-4 text-gray-500"
+                          aria-hidden="true"
+                        />
+                      ) : selected.name == "Input" ? (
                         <BsInputCursor
                           className="h-4 w-4 text-gray-500"
                           aria-hidden="true"
@@ -115,7 +185,33 @@ const FormPage = () => {
                               <span
                                 className={`pointer-events-none absolute inset-y-0 left-2 flex items-center pr-2`}
                               >
-                                {option.name == "Input" ? (
+                                {option.name == "Header" ? (
+                                  <TbHeading
+                                    className={({ active }) =>
+                                      ` ${
+                                        active ? "text-white" : ""
+                                      } h-4 w-4  ${
+                                        selected
+                                          ? "text-white hover:text-white"
+                                          : "text-gray-500 hover:text-white"
+                                      }`
+                                    }
+                                    aria-hidden="true"
+                                  />
+                                ) : option.name == "Paragraph" ? (
+                                  <BiParagraph
+                                    className={({ active }) =>
+                                      ` ${
+                                        active ? "text-white" : ""
+                                      } h-4 w-4  ${
+                                        selected
+                                          ? "text-white hover:text-white"
+                                          : "text-gray-500 hover:text-white"
+                                      }`
+                                    }
+                                    aria-hidden="true"
+                                  />
+                                ) : option.name == "Input" ? (
                                   <BsInputCursor
                                     className={({ active }) =>
                                       ` ${
@@ -169,64 +265,185 @@ const FormPage = () => {
             </div>
           </div>
           <div
-            className={`flex flex-col gap-4 mt-6 ${
+            className={`flex flex-col gap-4 mt-6 w-full  ${
               selectedInputs.length != 0 ? "" : "hidden"
             }`}
           >
             <span className="font-semibold text-red-500">Result:</span>
 
-            <Formik
-              initialValues={{}}
-              validationSchema={""}
-              onSubmit={async (values) => {
-                console.log(values);
-              }}
-            >
-              {({ errors, touched }) => (
-                <Form className=" w-full max-w-lg text-gray-700 text-sm">
-                  <div className=" w-full flex flex-col gap-4 ">
-                    {selectedInputs.map((item, index) => {
-                      return (
-                        <div key={index} className="flex flex-col gap-1">
-                          <div className="flex justify-between">
-                            <label>{item.label}:</label>
-                            <div className="flex gap-2">
-                              <div className="tooltip" data-tip="Edit">
-                                <MdOutlineModeEditOutline
-                                  onClick={() => {
-                                    setGetIndex(index);
-                                    setIsOpenModal(true);
-                                  }}
-                                  className="text-gray-700 hover:scale-110 duration-150 cursor-pointer group"
-                                />
+            <form onSubmit={handleSubmit} className=" text-gray-700 text-sm">
+              <div className=" w-full flex flex-col">
+                {selectedInputs.map((item, index) => {
+                  return (
+                    <div
+                      key={index}
+                      className={`flex flex-col gap-1 shadow p-2 rounded ${
+                        item.name == "Header" || item.name == "Paragraph"
+                          ? ""
+                          : "my-2"
+                      }`}
+                    >
+                      {item.name == "Header" ||
+                      item.name == "Paragraph" ? null : (
+                        <div className="flex justify-between ">
+                          <div className="flex items-center cursor-pointer hover:text-bold duration-100 ease-in-out gap-1">
+                            <label>
+                              {item.label == "paragraph" ||
+                              item.label == "header"
+                                ? null
+                                : item.label}
+                              : {""}
+                            </label>
+                            {item.helpText ? (
+                              <div
+                                className="tooltip"
+                                data-tip={`${item.helpText}`}
+                              >
+                                <BiHelpCircle />
                               </div>
-                              <div className="tooltip" data-tip="Delete">
-                                <IoCloseSharp
-                                  className="text-red-500 hover:scale-110 duration-150 cursor-pointer group"
-                                  onClick={() =>
-                                    setSelectedInputs(
-                                      selectedInputs.filter(
-                                        (item, i) => i != index
-                                      )
+                            ) : null}
+                          </div>
+                          <div className="flex gap-2">
+                            <div className="tooltip" data-tip="Edit">
+                              <MdOutlineModeEditOutline
+                                onClick={() => {
+                                  setGetId(index);
+                                  setIsOpenModal(true);
+                                }}
+                                className="text-gray-700 hover:scale-110 duration-150 cursor-pointer group"
+                              />
+                            </div>
+                            <div className="tooltip" data-tip="Delete">
+                              <IoCloseSharp
+                                className="text-red-500 hover:scale-110 duration-150 cursor-pointer group"
+                                onClick={() => {
+                                  console.log(item);
+                                  setValues({
+                                    ...values,
+                                    [item.fieldName.toLowerCase() +
+                                    "__" +
+                                    index]: "deleted",
+                                  });
+
+                                  setSelectedInputs(
+                                    selectedInputs.filter(
+                                      (item, i) => i != index
                                     )
-                                  }
-                                />
-                              </div>
+                                  );
+                                }}
+                              />
                             </div>
                           </div>
-                          <Field
-                            name={item.name.toLowerCase()}
-                            placeholder="place holder"
-                            type={item.type}
-                            className=" w-full border border-black rounded-md px-2 py-1 text-black"
-                          />
                         </div>
-                      );
-                    })}
-                  </div>
-                </Form>
-              )}
-            </Formik>
+                      )}
+                      <div className="flex items-center justify-between">
+                        {item.name == "Radio" ? (
+                          <div className="form-control">
+                            {selectedRadio.map((opt, index) => {
+                              return (
+                                <label
+                                  key={index}
+                                  className="label cursor-pointer flex gap-2"
+                                >
+                                  <input
+                                    name={`radio-input`}
+                                    // value={opt.selected}
+                                    placeholder={`${item.placeHolder}`}
+                                    type={item.type}
+                                    className="radio checked:bg-sky-500 radio-xs"
+                                    checked={opt.selected}
+                                    onChange={(e) => {
+                                      console.log(e.target);
+                                      opt.selected = e.target.checked;
+
+                                      // setSelectedRadio([
+                                      //   ...selectedRadio,
+                                      // ]);
+                                    }}
+                                  />
+                                  <span className="label-text">{opt.name}</span>
+                                </label>
+                              );
+                            })}
+                          </div>
+                        ) : (
+                          <input
+                            name={item.fieldName.toLowerCase() + "__" + index}
+                            placeholder={`${item.placeHolder}`}
+                            type={item.type}
+                            className={`radio ${
+                              item.name == "Header" || item.name == "Paragraph"
+                                ? "border-none  focus:outline-none w-[75%] "
+                                : "border rounded-md w-full"
+                            } ${
+                              item.name == "Header"
+                                ? "font-bold text-xl"
+                                : item.name == "Paragraph" && "text-base"
+                            } border-black px-2 py-1 text-black ${
+                              item.fontSize == "h1"
+                                ? "text-[32px]"
+                                : item.fontSize == "h2"
+                                ? "text-[24px]"
+                                : item.fontSize == "h3"
+                                ? "text-[18px]"
+                                : item.fontSize == "h4"
+                                ? "text-[16px]"
+                                : "text-base"
+                            } ${
+                              item.fontWeight == "b"
+                                ? "font-bold"
+                                : item.fontWeight == "sb"
+                                ? "font-semibold"
+                                : item.fontWeight == "md"
+                                ? "font-medium"
+                                : item.fontWeight == "base"
+                                ? "font-normal"
+                                : "font-normal"
+                            } `}
+                            required={item.require}
+                          />
+                        )}
+
+                        {item.name == "Header" || item.name == "Paragraph" ? (
+                          <div className={`flex gap-2 `}>
+                            <div className="tooltip" data-tip="Edit">
+                              <MdOutlineModeEditOutline
+                                onClick={() => {
+                                  setGetId(index);
+                                  setIsOpenModal(true);
+                                }}
+                                className="text-gray-700 hover:scale-110 duration-150 cursor-pointer group"
+                              />
+                            </div>
+                            <div className="tooltip" data-tip="Delete">
+                              <IoCloseSharp
+                                className="text-red-500 hover:scale-110 duration-150 cursor-pointer group"
+                                onClick={() => {
+                                  setValues({
+                                    ...values,
+                                    [item.fieldName.toLowerCase() +
+                                    "__" +
+                                    index]: "deleted",
+                                  });
+                                  setSelectedInputs(
+                                    selectedInputs.filter(
+                                      (item, i) => i != index
+                                    )
+                                  );
+                                }}
+                              />
+                            </div>
+                          </div>
+                        ) : null}
+                      </div>
+                    </div>
+                  );
+                })}
+              </div>
+              <button className="bg-sky-500 text-white px-2 py-1 rounded mt-4">
+                Submit
+              </button>
+            </form>
           </div>
         </div>
         <div className="md:w-[25%] bg-red-300">p</div>

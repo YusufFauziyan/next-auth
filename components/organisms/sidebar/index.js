@@ -69,14 +69,14 @@ export default function Sidebar() {
                 <a
                   href="#"
                   className={`flex items-center ${
-                    collapse ? "justify-center" : ""
+                    collapse
+                      ? "justify-center flex-col text-xs gap-1 text-center"
+                      : ""
                   } p-2 space-x-2 rounded-md`}
                 >
                   <FaWhatsapp className="text-white text-2xl" />
 
-                  {collapse ? null : ( // <div className="text-gray-100 text-[.7rem]">Connect</div>
-                    <div className="text-gray-100">Connect WA</div>
-                  )}
+                  <div className="text-gray-100 pr-2">Connect WA</div>
                 </a>
               </li>
               {/* <li className="rounded-sm hover:bg-[#000]/50 duration-200 ease-in-out">
